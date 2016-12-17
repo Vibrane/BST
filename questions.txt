@@ -1,0 +1,141 @@
+Q1. What are all the files that are created when I type 'make bst' for 
+the first time?
+
+The files that are created when I type 'make bst' for the first time are called
+.o object files. Rhwaw files are the compiled object code that is produced by the
+C or C++ compiler. Object files are processed by the linker to produce
+the final executable.
+
+********************************************************************************
+
+Q2: In the file BSTInt.cpp, remove the name scope from the insert function. That is, 
+change the function header from
+
+bool BSTInt::insert(int item)
+
+to
+
+bool insert(int item)
+
+Copy and paste the error that results when you now compile the code into your
+questions.txt file, and then explain what the error means and why it occurs.
+
+
+
+Abhinavs-MacBook-Pro-2:repo_st_921_7865_9582_bst_in_c_ tactician$ make all
+g++  	 -g -Wall -std=c++11 -c BSTInt.cpp
+BSTInt.cpp:25:8: error: use of undeclared identifier 'root'
+  if (!root) {
+       ^
+BSTInt.cpp:26:5: error: use of undeclared identifier 'root'
+    root = new BSTNodeInt(item);
+    ^
+BSTInt.cpp:27:7: error: use of undeclared identifier 'isize'
+    ++isize;
+      ^
+BSTInt.cpp:31:22: error: use of undeclared identifier 'root'
+  BSTNodeInt* curr = root;
+                     ^
+BSTInt.cpp:56:5: error: use of undeclared identifier 'isize'
+  ++isize;
+    ^
+5 errors generated.
+make: *** [BSTInt.o] Error 1
+
+
+Basically, when you remove "BSTInt::", the compiler does not know where the 
+variables root and size are coming from. By specifying, "BSTInt::", you are telling
+the compiler to check for the variables root and size in the BSTInt.cpp file,
+which then checks the BSTInt.h file, because of the #include "BSTInt.h"
+
+
+********************************************************************************
+
+Q3: In a sentence or two, describe the bug in the code.  What function was it is, and what was it?
+
+The bug in the code was in the insert function which was incorrectly placing
+the current pointer. An example of where this would fail is if the vector was
+{5, 3, 1}.
+
+ 
+
+********************************************************************************
+
+Q4: In about a paragraph, describe the process you used to find an fix the bug. 
+ Include any tools you used and how you used them. 
+ If you were able to spot the bug by just looking at the code, 
+ describe your reasoning process in detail.  We're not looking for the
+ corrected code here (we already have that in your .cpp file).  
+ Rather we're looking for a description of your debugging process.  Please be specific.
+
+For some reason, the gdb was not working for me, so I couldn't use any tools
+to debug the code with tools. So, the only choice I had was to do everything
+by hand. I clearly noticed, the while check was not working as intentional.
+Assume the vector was {5, 3, 1}. Since, intitially the BST has no nodes, a root
+node was created which had the data 5. Then, it would check for curr->left and 
+curr->right which would both be null. So, the while loop will not execute. Then, 
+3 will be added as the left child of root node, 5. However, the problem comes
+when trying to add 1. Since, the while condition was that both curr->left and
+curr->right are not null, that's where the problem is. Curr->left is pointing
+to the node containing 3, which is fine. But, since the right child is null, the
+while loop falsely does not execute. Thereby, by making the node 1 the left child
+of node 5 and makes the node 3 lonely in the heap.
+
+********************************************************************************
+
+Q5: Look at header for the insert method in the BST.hpp and compare it to the header 
+of the insert method in BSTInt.h. For each class state whether the insert method passes 
+its argument by value or by reference. Explain why each method probably uses the method 
+that it uses (i.e. if pass by value, explain why not pass by reference, and if pass 
+by reference, explain why not pass by value).
+
+In the BSTInt.h, the insert method passes its argument by value. 
+In the BST.hpp,    the insert method passes its argument by reference.
+Since int is a primitive data type, it's more efficient to pass by value. 
+Primitives are blitable, so the cost of copy is depedent on 
+For BST.hpp,
+it makes sense to pass by reference, so you do not duplicate the Data object 
+being passed.
+
+********************************************************************************
+Q6: Which input file produces taller trees (sorted or random)? 
+
+Sorted produces the taller trees.
+
+********************************************************************************
+
+Q7:Research on your own the height you would expect for the tree produced by the 
+sorted input and for the tree produced by the random input.  Give the approximate 
+height you would expect for each tree based on the size of the tree, N.  Then build 
+the tree for different sizes of sorted and randomly ordered input, report your results, 
+and comment on whether what you see matches your expectations.  Be sure to cite your 
+source for the heights you expect.
+
+Unsorted BST should be at most log(N).
+    Size of tree: 11794
+    Height of tree: 32
+    Actual value for theoretical height is: 13.5257654788 which shows the 
+    textfile is not completely random. 
+
+Sorted BST should be N-1. - worst case being a Linked List 
+    Size of tree: 11794
+    Height of tree: 11793
+
+The example of this is seen from the actor_sorted.txt and actor.txt files which was
+tested in the testBST.cpp
+
+Info from Paul Kube lecture slides (CSE 100).
+
+
+I do not know how to create a "perfect" random BST which makes getting the 
+average-value very hard to do. 
+
+
+
+
+
+
+
+
+
+
